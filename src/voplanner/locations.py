@@ -15,6 +15,17 @@ locations_dict = {
         'temp': 0,
         'tz': 'US/Hawaii',
         'description': "Subaru Telescope on Maunakea, Hawaii"
+        },
+    "dot": {
+        'name': "3.6m Devasthal Optical Telescope",
+        'long': '+79d41m04s',
+        'lat': '+29d21m40',
+        'elev': 2424,
+        'pres': 0.7,
+        'hum': 0.3,
+        'temp': -4.5,
+        'tz': 'Asia/Kolkata',
+        'description': "3.6 m Devasthal Optical Telescope"
         }
 }
 
