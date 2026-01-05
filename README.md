@@ -20,10 +20,10 @@ Create the target list in the format of [this]() file and save as csv file. Add 
 
 ```bash
 TARGETS =
-
+```
 Save the config file. Then run the following command in terminal
 
 ```bash
 $ voplanner plan_config.config
-
+```
 
