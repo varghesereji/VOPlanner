@@ -9,6 +9,7 @@ Run the following command in terminal
 
 ```bash
 $ pip install git+https://github.com/varghesereji/VOPlanner.git
+```
 
 ## Usage
 
