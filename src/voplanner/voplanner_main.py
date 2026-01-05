@@ -112,9 +112,9 @@ def main():
         t_utc = Time(mdates.num2date(x))
         t_local = t_utc.to_datetime(timezone=timezone)
         label = (
-            f"{line.get_label()}\n"
-            f"Time : {t_local.strftime('%H:%M')}\n"
-            f"Alt : {y:.1f}o"
+            rf"$\bf{{{line.get_label()}}}$" "\n"
+            rf"Time : {t_local.strftime('%H:%M')}" "\n"
+            rf"Alt : ${y:.1f}^o$"
             )
         # sel.annotation.set_text(line.get_label())
         sel.annotation.set_text(label)
