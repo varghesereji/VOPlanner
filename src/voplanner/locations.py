@@ -26,6 +26,17 @@ locations_dict = {
         'temp': -4.5,
         'tz': 'Asia/Kolkata',
         'description': "3.6 m Devasthal Optical Telescope"
+        },
+    "hct": {
+        'name': "2-m Himalayan Chandra Telescope",
+        'long': '+78d57m51s',
+        'lat': '+32d46m46s',
+        'elev': 4500,
+        'pres': 0.7,
+        'hum': 0.2,
+        'temp': 0,
+        'tz': 'Asia/Kolkata',
+        'description': "2-m Himalayan Chandra Telescope"
         }
 }
 
