@@ -6,7 +6,7 @@ A tool to plan astronomical observation with Astroplan.
 Run the following command in terminal
 
 ```bash
-pip install git+https://github.com/varghesereji/VOPlanner.git
+$ pip install git+https://github.com/varghesereji/VOPlanner.git
 
 # Usage
 
@@ -21,7 +21,6 @@ TARGETS =
 Save the config file. Then run the following command in terminal
 
 ```bash
-
-voplanner plan_config.config
+$ voplanner plan_config.config
 
 
