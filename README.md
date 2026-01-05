@@ -1,14 +1,16 @@
 # VOPlanner
 A tool to plan astronomical observation with Astroplan.
 
-# Install
+---
+
+## Install
 
 Run the following command in terminal
 
 ```bash
 $ pip install git+https://github.com/varghesereji/VOPlanner.git
 
-# Usage
+## Usage
 
 Download the config file from
 [Here](https://github.com/varghesereji/VOPlanner/blob/main/src/voplanner/config/plan_config.config)
