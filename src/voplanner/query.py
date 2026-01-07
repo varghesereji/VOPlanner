@@ -34,9 +34,26 @@ def query_target_radec(target_name):
 
     coord = SkyCoord(
         ra, dec,
-        unit=(u.hourangle, u.deg),
+        unit=(u.deg, u.deg),
         frame='icrs'
     )
+    ra_str = coord.ra.to_string(
+    unit=u.hour,
+    sep=':',
+    precision=2,
+    pad=True
+    )
+
+    dec_str = coord.dec.to_string(
+        unit=u.deg,
+        sep=':',
+        precision=2,
+        alwayssign=True,
+        pad=True
+    )
+
+    print(f"RA  = {ra_str}")
+    print(f"Dec = {dec_str}")
 
     return coord
 
