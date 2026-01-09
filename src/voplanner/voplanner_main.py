@@ -21,13 +21,69 @@ from .setups import read_config
 from .query import query_target_radec
 
 
+# coordinate
+
+import re
+import astropy.units as u
+from astropy.coordinates import SkyCoord, Angle
+
+def extract_numbers(val):
+    return list(map(float, re.findall(r"[-+]?\d*\.?\d+", val)))
+
+def normalize_sexagesimal(sign, a, b, c):
+    b += int(c // 60)
+    c = c % 60
+
+    a += int(b // 60)
+    b = b % 60
+
+    return sign * a, b, c
+
+
+def smart_skycoord(ra, dec, frame="icrs"):
+    # --- 1. Try Astropy directly ---
+    try:
+        return SkyCoord(ra, dec, frame=frame)
+    except Exception:
+        pass
+
+    # --- 2. Parse RA ---
+    ra_nums = extract_numbers(ra)
+    if len(ra_nums) == 1:
+        ra_angle = Angle(ra_nums[0], unit=u.deg)
+    elif len(ra_nums) >= 3:
+        h, m, s = ra_nums[:3]
+        h, m, s = normalize_sexagesimal(1, h, m, s)
+        ra_angle = Angle((h + m/60 + s/3600) * 15, unit=u.deg)
+    else:
+        raise ValueError(f"Unrecognized RA format: {ra}")
+
+    # --- 3. Parse Dec ---
+    dec_nums = extract_numbers(dec)
+    sign = -1 if "-" in dec.strip() else 1
+    if len(dec_nums) == 1:
+        dec_angle = Angle(sign * dec_nums[0], unit=u.deg)
+    elif len(dec_nums) >= 3:
+        d, m, s = dec_nums[:3]
+        d, m, s = normalize_sexagesimal(sign, d, m, s)
+        dec_angle = Angle(d + m/60 + s/3600, unit=u.deg)
+    else:
+        raise ValueError(f"Unrecognized Dec format: {dec}")
+
+    return SkyCoord(ra=ra_angle, dec=dec_angle, frame=frame)
+
+
 # Plotting
-def plotting_one(time, observer, target, ax=None):
+def plotting_one(time, observer, target, ax=None, limits=(0, 90)):
     if ax is None:
         ax = plt.gca()
-        plot_altitude(target, observer, time, airmass_yaxis=True)
+        plot_altitude(target, observer, time, airmass_yaxis=True,
+                      min_altitude=limits[0],
+                      max_altitude=limits[-1])
     else:
-        plot_altitude(target, observer, time, ax=ax, airmass_yaxis=True)
+        plot_altitude(target, observer, time, ax=ax, airmass_yaxis=True,
+                      min_altitude=limits[0],
+                      max_altitude=limits[-1])
     line = ax.lines[-1]
     line.set_label(target.name)
     return line
@@ -38,6 +94,7 @@ def plotting_sky(time, observer, target, ax=None):
         plot_sky(target, observer, time)
     else:
         plot_sky(target, observer, time, ax=ax)
+
 
 def time_from_local(timestr, observer):
     tz = observer.timezone
@@ -78,19 +135,26 @@ def main():
     for i, name in enumerate(targets_name):
         ra = tbl['ra'][i]
         dec = tbl['dec'][i]
+        print("Doing for ", name)
         if ra is np.ma.masked or dec is np.ma.masked:
             # print(ra, dec)
             target = targets_name[i]
             print("Coordinates of {} not given. Querying in Simbad".format(
                 target))
             coord = query_target_radec(target)
-            # continue
+            if coord is None:
+                print("Couldn't complete query. Check target name")
+                continue
         else:
-            coords = ra + " " + dec
-            coord = SkyCoord(coords)
+            # coords = ra + " " + dec
+            coord = smart_skycoord(ra, dec)
+            # coord = SkyCoord(ra=ra, dec=dec)  #, coords)
         target = FixedTarget(coord=coord,
                              name=name)
-        line = plotting_one(times, observer, target, ax=ax)
+        min_alt = float(config['setups']['MIN_ALT'])
+        max_alt = float(config['setups']['MAX_ALT'])
+        line = plotting_one(times, observer, target, ax=ax,
+                            limits=(min_alt, max_alt))
         lines.append(line)
         plotting_sky(times, observer, target, ax=ax2)
     cursor = mplcursors.cursor(lines, hover=True)
